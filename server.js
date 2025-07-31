@@ -1,14 +1,11 @@
 const express = require("express");
 const axios = require("axios");
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.get("/proxy", async (req, res) => {
   const targetUrl = req.query.url;
-  if (!targetUrl) {
-    return res.status(400).send("URL obrigatória: /proxy?url=http://...");
-  }
+  if (!targetUrl) return res.status(400).send("URL obrigatória: /proxy?url=...");
 
   try {
     const response = await axios({
@@ -20,7 +17,6 @@ app.get("/proxy", async (req, res) => {
         "Referer": "http://example.com"
       }
     });
-
     res.setHeader("Content-Type", response.headers["content-type"] || "application/octet-stream");
     response.data.pipe(res);
   } catch (err) {
@@ -29,6 +25,4 @@ app.get("/proxy", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Proxy rodando em http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Proxy rodando na porta ${PORT}`));
